@@ -3,3 +3,4 @@ transformers~=4.20.1
 Pillow~=9.2.0
 streamlit~=1.10.0
 cloudpickle==2.1.0
+plotly~=5.9.0
