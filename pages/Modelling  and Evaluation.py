@@ -117,5 +117,5 @@ with st.expander("First model conclusion"):
     st.write("""The model was capable of producing accurate captions most of the time, however we were not yet satisfied
     with the model. This in hindsight was probably caused by training the model for not long enough.""")
     st.subheader("Example caption:")
-    st.image("WhatsApp Image 2022-06-20 at 17.39.57.jpeg")
+    st.image("WhatsApp Image 2022-06-20 at 17.39.57")
     
