@@ -3,6 +3,7 @@ import random
 import pickle 
 from model import predict_step
 import plotly.express as px
+import pandas as pd
 
 # Configure page 
 st.set_page_config(
