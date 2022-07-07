@@ -9,8 +9,10 @@ with st.expander("Information in advance"):
 
 with st.expander("Data Understanding"):
     st.write("""To train, validate and test the model, we were first provided with the LAION dataset, which is available to us as a CSV file. With 240 TB, 
-             this is currently the largest freely accessible image-text dataset in the world. Due to the often inaccurate captions and vague image content,
-             we searched for other, more suitable datasets to form the basis of our project. After research, we decided on the Flickr dataset, which stores 
+             this is currently the largest freely accessible image-text dataset in the world. On this dataset we performed
+             data cleaning and feature engineering steps, as we did with our later datset. However due to the often inaccurate captions and vague image content,
+             we searched for other, more suitable datasets to form the basis of our project. As often times the captions
+             in the LAION dataset were completly unusable. After research, we decided on the Flickr dataset, which stores 
              images and captions separately. The dataset contains high-quality images with varying content, but all can be meaningfully classified.""")
 
     st.subheader("Three example images from the Flickr8k dataset")
@@ -136,4 +138,3 @@ with open("images1.pkl", "wb") as encoded_pickle:
 
 with st.expander("Data Splitting"):
     st.write("""For our model we utilized all 8,000 images for the training loop.""")
-    
