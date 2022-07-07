@@ -22,12 +22,21 @@ st.write("# ML4B - Image Caption Generator")
 # Project explanation
 st.header("Short project explanation")
 st.write("""Hello, we are Jonas, Moritz and Ole. Together we want to understand, build and present a caption generator 
-using neural networks. We use this subtype of machine learning because it is closest to the way humans analyze images. 
-How does the application work? The user has the option to either upload an image or select one from the dataset. Our 
+using neural networks. How does the application work? The user has the option to either upload an image or select one from the dataset. Our 
 model then tries to create a label that is as accurate as possible. To evaluate, the user can vote via a button which 
 of the two captions they think better represents the image content. The results are displayed in a graph for viewing 
 and further analysis.""")
 st.write("")
+
+# Data Set
+df = pd.DataFrame({"Choice":['accurate caption', 'inaccurate caption'],
+'Values':[60, 40]})
+fig = px.pie(df, values='Values', names='Choice')
+st.header("Caption accuracy")
+# The plot
+plot_spot = st.empty()
+with plot_spot:
+    st.plotly_chart(fig)
 
 # Show picture and generate caption
 def gen_caption(picture):
@@ -36,6 +45,16 @@ def gen_caption(picture):
     with st.spinner(text='This may take a moment...'):
         caption = predict_step([picture])
     st.write(caption[0])
+    #voting option
+    holder = st.empty()
+    user_vote = st.selectbox(label='Vote on the captions accuracy',
+                           options=['', 'accurate caption', 'inaccurate caption'], index= 0)
+    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+
+    if user_vote == 'accurate caption':
+        holder.empty()
+    elif user_vote == 'inaccurate caption':
+        holder.empty()
 
 # User chooses between preuploaded picture or uploads one himself
 col1, col2, col3 = st.columns([0.5, 1, 0.5])
