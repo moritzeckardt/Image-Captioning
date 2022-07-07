@@ -2,6 +2,8 @@ import streamlit as st
 import random
 import pickle 
 from model import predict_step
+import plotly.express as px
+
 # Configure page 
 st.set_page_config(
     page_title = "Image Captioning",
