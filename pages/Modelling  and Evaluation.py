@@ -58,7 +58,7 @@ model = Model(inputs=[inputs1, inputs2], outputs=outputs)
 model.summary()""")
 with st.expander('training'):
     st.write("After the finished construction of your model, we compiled it with the categorical cross-entropy "
-             "loss function and the Adam optimizer. We then trained the model for 20 epochs, which we felt would be"
+             "loss function and the Adam optimizer. We then trained the model for 20 epochs, which we felt would be "
              "time appropriate. In hindsight this choice might have been one of the main reasons, why we were "
              "unsatisfied with the trained model in the end. After each the training loop the model was saved via "
              "Keras.")
