@@ -3,7 +3,7 @@ import streamlit as st
 st.markdown("<h1 style='text-align: center'> Modelling and Evaluation</h1>", unsafe_allow_html=True)
 
 st.subheader('First model')
-with st.expander('word embedding'):
+with st.expander('Word embedding'):
     st.write("""To help our model with generating captions, we utilized the pre-trained GloVe: Global Vector for Word
     Representation. This vector was then used to create an embedding matrix of an uniformly distributed 200 length for 
     all the unique words.""")
@@ -201,11 +201,11 @@ with st.expander("Fine tuning Flax"):
     st.write("""https://huggingface.co/ydshieh/flax-vision-encoder-decoder-vit-gpt2-coco-en/blob/6b617007a2412a500493cc7ab8737720212286ce/run_image_captioning_flax.py
      this is complete fine tuning process, it contains alot of familiar steps, as well as many new and interesting methods.""")
 
-    with st.expander("Implementing FlaxVisionEncoderDecoder Model"):
-        st.write("""First a provided picture is transformed into RGB if it is in another image mode such as P. 
+with st.expander("Implementing FlaxVisionEncoderDecoder Model"):
+    st.write("""First a provided picture is transformed into RGB if it is in another image mode such as P. 
                  The feature extractor then transforms the picture into image vectors, which are then passed through the
                  model, which finally goes through the tokenizer to produce a predicted caption.""")
-        st.code("""model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+    st.code("""model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 feature_extractor = ViTFeatureExtractor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 
