@@ -32,7 +32,7 @@ for word, i in wordtoix.items():
         
 embedding_matrix.shape""")
 
-with st.expander('modelling'):
+with st.expander('Modelling'):
     st.write("""Then we built the LSTM and embedding layers. The model utilizes both the image vectors and word 
     embeddings as inputs. The embedding vector goes through an LSTM architecture, which then makes the appropriate
     word predictions. The image vector is then combined with the LSTM predictions and passed through dense layers and
@@ -56,7 +56,7 @@ outputs = Dense(vocab_size, activation='softmax')(decoder2)
 
 model = Model(inputs=[inputs1, inputs2], outputs=outputs)
 model.summary()""")
-with st.expander('training'):
+with st.expander('Training'):
     st.write("After the finished construction of your model, we compiled it with the categorical cross-entropy "
              "loss function and the Adam optimizer. We then trained the model for 20 epochs, which we felt would be "
              "time appropriate. In hindsight this choice might have been one of the main reasons, why we were "
@@ -81,7 +81,7 @@ for i in range(epochs):
     generator = data_generator(data2, features, wordtoix, max_length, number_pics_per_bath)
     model.fit(generator, epochs=1, steps_per_epoch=steps, verbose=1)
     model.save('model_' + str(i) + '.h5')""")
-with st.expander("generating predictions"):
+with st.expander("Generating predictions"):
     st.write("""To use our model in streamlit we loaded the final saved state after the training loop.""")
     st.code("""features = pickle.load(open("images1.pkl", "rb"))
 model = load_model('model_9.h5')
