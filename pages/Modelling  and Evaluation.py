@@ -113,9 +113,128 @@ x = plt.imread(images+pic)
 plt.imshow(x)
 plt.show()
 print("Caption:", Image_Caption(image))""")
-with st.expander("First model conclusion"):
+with st.expander("First model evaluation and conclusion"):
     st.write("""The model was capable of producing accurate captions most of the time, however we were not yet satisfied
-    with the model. This in hindsight was probably caused by training the model for not long enough.""")
+    with the model. This in hindsight was probably caused by training the model for not long enough. Due to our
+    dissatisfaction with the model we evaluated it and came to the conclusion, that the model was simply not accurate 
+    enough, which is why we archived it in our repository and went on the search for another approach.""")
     st.subheader("Example caption:")
-    st.image("example.jpg")
+    st.image("WhatsApp Image 2022-06-20 at 17.39.57.jpeg")
+
+st.subheader('Second model')
+with st.expander("Flax"):
+    st.write("""As we were not fully satisfied with our first model and didn't find a more suitable model, whose 
+    training would have been feasible (time and hardware wise) for us, we opted to use the pre-trained FlaxVisionEncoderDecoder
+     Framework. This is a Transformers library based on JAX/Flax. JAX/Flax allows tracing pure functions and compiling 
+     them into efficient, fused accelerator code on both GPU and TPU. Models written in JAX/Flax are immutable and updated
+      in a purely functional way which enables simple and efficient model parallelism. """)
+with st.expander("Fine tuning Flax"):
+    st.write("""The FlaxVisionEncoderDecoder Framework was fine tuned on the MS Coco datset, which like the Flickr 
+    dataset contains images with five corresponding captions. The main difference is, that the MS Coco datset needs no 
+     Data Cleaning Process, as it is already provided in lower case without punctuations. """)
+    st.code("""if data_args.dataset_name is not None:
+        # Downloading and loading a dataset from the hub.
+        dataset = load_dataset(
+            data_args.dataset_name,
+            data_args.dataset_config_name,
+            cache_dir=model_args.cache_dir,
+            keep_in_memory=False,
+            data_dir=data_args.data_dir,
+        )
+    else:
+        data_files = {}
+        if data_args.train_file is not None:
+            data_files["train"] = data_args.train_file
+            extension = data_args.train_file.split(".")[-1]
+        if data_args.validation_file is not None:
+            data_files["validation"] = data_args.validation_file
+            extension = data_args.validation_file.split(".")[-1]
+        if data_args.test_file is not None:
+            data_files["test"] = data_args.test_file
+            extension = data_args.test_file.split(".")[-1]
+        dataset = load_dataset(extension, data_files=data_files, cache_dir=model_args.cache_dir)""")
+    st.write("""Preprocessing the dataset and tokenizing the inputs and targets""")
+    st.code("""if training_args.do_train:
+        column_names = dataset["train"].column_names
+    elif training_args.do_eval:
+        column_names = dataset["validation"].column_names
+    elif training_args.do_predict:
+        column_names = dataset["test"].column_names
+    else:
+        logger.info("There is nothing to do. Please pass `do_train`, `do_eval` and/or `do_predict`.")
+        return
+
+    # Get the column names for input/target.
+    dataset_columns = image_captioning_name_mapping.get(data_args.dataset_name, None)
+    if data_args.image_column is None:
+        assert dataset_columns is not None
+        image_column = dataset_columns[0]
+    else:
+        image_column = data_args.image_column
+        if image_column not in column_names:
+            raise ValueError(
+                f"--image_column' value '{data_args.image_column}' needs to be one of: {', '.join(column_names)}"
+            )
+    if data_args.caption_column is None:
+        assert dataset_columns is not None
+        caption_column = dataset_columns[1]
+    else:
+        caption_column = data_args.caption_column
+        if caption_column not in column_names:
+            raise ValueError(
+                f"--caption_column' value '{data_args.caption_column}' needs to be one of: {', '.join(column_names)}"
+            )""")
+
+    st.write("""The pre-trained model was fine tuned via a conventional training loop and an evaluation loop.""")
+    st.code("""#the pre-trained Flax model
+     model = FlaxVisionEncoderDecoderModel.from_encoder_decoder_pretrained(
+        encoder_pretrained_model_name_or_path=model_args.encoder_model_name_or_path,
+        decoder_pretrained_model_name_or_path=model_args.decoder_model_name_or_path,
+        encoder_config=encoder_config,
+        decoder_config=decoder_config,
+        encoder_seed=training_args.seed,
+        decoder_seed=training_args.seed,
+        encoder_dtype=getattr(jnp, model_args.dtype),
+        decoder_dtype=getattr(jnp, model_args.dtype),
+    )
+""")
+    st.write("""https://huggingface.co/ydshieh/flax-vision-encoder-decoder-vit-gpt2-coco-en/blob/6b617007a2412a500493cc7ab8737720212286ce/run_image_captioning_flax.py
+     this is complete fine tuning process, it contains alot of familiar steps, as well as many new and interesting methods.""")
+
+    with st.expander("Implementing FlaxVisionEncoderDecoder Model"):
+        st.write("""First a provided picture is transformed into RGB if it is in another image mode such as P. 
+                 The feature extractor then transforms the picture into image vectors, which are then passed through the
+                 model, which finally goes through the tokenizer to produce a predicted caption.""")
+        st.code("""model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+feature_extractor = ViTFeatureExtractor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+
+
+
+max_length = 16
+num_beams = 4
+gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
+def predict_step(image_paths):
+  images = []
+  for image_path in image_paths:
+    i_image = Image.open(image_path)
+    if i_image.mode != "RGB":
+      i_image = i_image.convert(mode="RGB")
+
+    images.append(i_image)
+
+  pixel_values = feature_extractor(images=images, return_tensors="pt").pixel_values
+  pixel_values = pixel_values.to(device)
+
+  output_ids = model.generate(pixel_values, **gen_kwargs)
+
+  preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)
+  preds = [pred.strip() for pred in preds]
+  return preds""")
+with st.expander("Evaluating Flax"):
+    st.write("""The FlaxVisionEncoderDecoder Model completely outdid our expectations both in accuracy and precision.
+     Try out the model yourself on our app page! """)
     
