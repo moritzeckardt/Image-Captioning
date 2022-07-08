@@ -119,7 +119,7 @@ with st.expander("First model evaluation and conclusion"):
     dissatisfaction with the model we evaluated it and came to the conclusion, that the model was simply not accurate 
     enough, which is why we archived it in our repository and went on the search for another approach.""")
     st.subheader("Example caption:")
-    st.image("WhatsApp Image 2022-06-20 at 17.39.57.jpeg")
+    st.image("example.jpg")
 
 st.subheader('Second model')
 with st.expander("Flax"):
