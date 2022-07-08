@@ -199,7 +199,7 @@ with st.expander("Fine tuning Flax"):
     )
 """)
     st.write("""https://huggingface.co/ydshieh/flax-vision-encoder-decoder-vit-gpt2-coco-en/blob/6b617007a2412a500493cc7ab8737720212286ce/run_image_captioning_flax.py
-     this is complete fine tuning process, it contains alot of familiar steps, as well as many new and interesting methods.""")
+     this is the complete fine tuning process, it contains alot of familiar steps, as well as many new and interesting methods.""")
 
 with st.expander("Implementing FlaxVisionEncoderDecoder Model"):
     st.write("""First a provided picture is transformed into RGB if it is in another image mode such as P. 
